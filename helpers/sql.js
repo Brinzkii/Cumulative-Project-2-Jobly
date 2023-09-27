@@ -53,42 +53,56 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
  */
 
 function sqlForPartialFilter(dataToFilter) {
-	const keys = Object.keys(dataToFilter);
-	let cols = [];
-	let counter = 1;
+	try {
+		const keys = Object.keys(dataToFilter);
+		let cols = [];
+		let counter = 1;
 
-	keys.forEach((colName) => {
-		if (colName === 'nameLike') {
-			if (dataToFilter.nameLike) {
-				dataToFilter.nameLike = '%' + dataToFilter.nameLike + '%';
-				cols.push(`name ILIKE $${counter}`);
-				counter++;
+		keys.forEach((colName) => {
+			if (colName === 'nameLike') {
+				if (dataToFilter.nameLike) {
+					dataToFilter.nameLike = '%' + dataToFilter.nameLike + '%';
+					cols.push(`name ILIKE $${counter}`);
+					counter++;
+				} else {
+					delete dataToFilter.nameLike;
+				}
+			} else if (colName === 'minEmployees') {
+				if (dataToFilter.minEmployees) {
+					cols.push(`num_employees>=$${counter}`);
+					dataToFilter.minEmployees = Number(dataToFilter.minEmployees);
+					counter++;
+				} else {
+					delete dataToFilter.minEmployees;
+				}
+			} else if (colName === 'maxEmployees') {
+				if (dataToFilter.maxEmployees) {
+					cols.push(`num_employees<=$${counter}`);
+					dataToFilter.maxEmployees = Number(dataToFilter.maxEmployees);
+					counter++;
+				} else {
+					delete dataToFilter.maxEmployees;
+				}
 			} else {
-				delete dataToFilter.nameLike;
+				throw new BadRequestError(
+					'Filter does not match allowed methods: minEmployees, maxEmployees, nameLike'
+				);
 			}
-		} else if (colName === 'minEmployees') {
-			if (dataToFilter.minEmployees) {
-				cols.push(`num_employees>=$${counter}`);
-				dataToFilter.minEmployees = Number(dataToFilter.minEmployees);
-				counter++;
-			} else {
-				delete dataToFilter.minEmployees;
-			}
-		} else if (colName === 'maxEmployees') {
-			if (dataToFilter.maxEmployees) {
-				cols.push(`num_employees<=$${counter}`);
-				dataToFilter.maxEmployees = Number(dataToFilter.maxEmployees);
-				counter++;
-			} else {
-				delete dataToFilter.maxEmployees;
-			}
+		});
+
+		console.log(dataToFilter);
+
+		if (Object.keys(dataToFilter).length === 0) {
+			throw new BadRequestError('Must use at least one filter: minEmployees, maxEmployees, nameLike');
 		}
-	});
 
-	return {
-		filterCols: cols.join(' AND '),
-		values: Object.values(dataToFilter),
-	};
+		return {
+			filterCols: cols.join(' AND '),
+			values: Object.values(dataToFilter),
+		};
+	} catch (err) {
+		throw new BadRequestError(err.message);
+	}
 }
 
 module.exports = { sqlForPartialUpdate, sqlForPartialFilter };

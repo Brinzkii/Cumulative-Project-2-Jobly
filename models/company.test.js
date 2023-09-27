@@ -111,6 +111,39 @@ describe("get", function () {
   });
 });
 
+/************************************** filter */
+
+describe('filter', function () {
+  test('works', async function () {
+    let companies = await Company.filter(1,2,'c')
+    expect(companies).toEqual([
+      			{
+      				handle: 'c1',
+      				name: 'C1',
+      				description: 'Desc1',
+      				numEmployees: 1,
+      				logoUrl: 'http://c1.img',
+      			},
+      			{
+      				handle: 'c2',
+      				name: 'C2',
+      				description: 'Desc2',
+      				numEmployees: 2,
+      				logoUrl: 'http://c2.img',
+      			},
+      		])
+  })
+
+  test('bad request if no data', async function() {
+    try{
+      let res = await Company.filter()
+    } catch (err) {
+      expect(err.message).toEqual('Must use at least one filter: minEmployees, maxEmployees, nameLike')
+      expect(err.status).toEqual(400)
+    }
+  })
+})
+
 /************************************** update */
 
 describe("update", function () {
