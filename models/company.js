@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForPartialFilter } = require('../helpers/sql');
 
 /** Related functions for companies. */
 
@@ -58,32 +58,29 @@ class Company {
 
 	/** Find all companies matching given criteria
 	 *
-	 *  Accepts minEmployees, maxEmployees, nameLike
-	 *  If any criteria are left off defaults are applied to
+	 *  Accepts any combination of minEmployees, maxEmployees and nameLike
 	 *
 	 *  Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
 	 */
 
 	static async filter(minEmployees, maxEmployees, nameLike) {
-		if (!nameLike) nameLike = '';
-		nameLike = '%' + nameLike + '%';
-		minEmployees = minEmployees || 0;
-		maxEmployees = maxEmployees || 10000000;
+		const data = {
+			minEmployees,
+			maxEmployees,
+			nameLike,
+		};
+		const { filterCols, values } = sqlForPartialFilter(data);
+		const querySql = `SELECT handle,
+		name,
+		description,
+		num_employees AS "numEmployees",
+		logo_url AS "logoUrl"
+		FROM companies
+		WHERE ${filterCols}
+		ORDER BY name`;
 
-		const companiesRes = await db.query(
-			`SELECT handle,
-                name,
-                description,
-                num_employees AS "numEmployees",
-                logo_url AS "logoUrl"
-         FROM companies
-         WHERE name ILIKE $1 AND
-         num_employees >= $2 AND
-         num_employees <= $3
-         ORDER BY name`,
-			[nameLike, minEmployees, maxEmployees]
-		);
-		return companiesRes.rows;
+		const result = await db.query(querySql, [...values]);
+		return result.rows;
 	}
 
 	/** Given a company handle, return data about company.
