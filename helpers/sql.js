@@ -121,6 +121,7 @@ function sqlForCompanyPartialFilter(dataToFilter) {
 
 function sqlForJobPartialFilter(dataToFilter) {
 	try {
+		console.log(dataToFilter);
 		const keys = Object.keys(dataToFilter);
 		let cols = [];
 		let counter = 1;
