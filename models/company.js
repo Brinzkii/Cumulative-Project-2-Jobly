@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
-const { sqlForPartialUpdate, sqlForPartialFilter } = require('../helpers/sql');
+const { sqlForPartialUpdate, sqlForCompanyPartialFilter } = require('../helpers/sql');
 
 /** Related functions for companies. */
 
@@ -69,7 +69,7 @@ class Company {
 			maxEmployees,
 			nameLike,
 		};
-		const { filterCols, values } = sqlForPartialFilter(data);
+		const { filterCols, values } = sqlForCompanyPartialFilter(data);
 		const querySql = `SELECT handle,
 		name,
 		description,
