@@ -93,7 +93,7 @@ router.get('/:handle', async function (req, res, next) {
  * Authorization required: admin
  */
 
-router.patch('/:handle', ensureAdmin, async function (req, res, next) {
+router.patch('/:handle', ensureLoggedIn, ensureAdmin, async function (req, res, next) {
 	try {
 		const validator = jsonschema.validate(req.body, companyUpdateSchema);
 		if (!validator.valid) {
@@ -113,7 +113,7 @@ router.patch('/:handle', ensureAdmin, async function (req, res, next) {
  * Authorization: admin
  */
 
-router.delete('/:handle', ensureAdmin, async function (req, res, next) {
+router.delete('/:handle', ensureLoggedIn, ensureAdmin, async function (req, res, next) {
 	try {
 		await Company.remove(req.params.handle);
 		return res.json({ deleted: req.params.handle });
