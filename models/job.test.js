@@ -105,7 +105,12 @@ describe('get', function () {
 
 describe('filter', function () {
 	test('works', async function () {
-		let jobs = await Job.filter('', 5000, 'true');
+		const data = {
+			title: '',
+			minSalary: 5000,
+			hasEquity: 'true',
+		};
+		let jobs = await Job.filter(data);
 		expect(jobs).toEqual([
 			{
 				id: expect.any(Number),
@@ -126,7 +131,7 @@ describe('filter', function () {
 
 	test('bad request if no data', async function () {
 		try {
-			let res = await Job.filter();
+			let res = await Job.filter({});
 		} catch (err) {
 			expect(err.message).toEqual('Must use at least one filter: title, minSalary, hasEquity');
 			expect(err.status).toEqual(400);

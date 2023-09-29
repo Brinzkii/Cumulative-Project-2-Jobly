@@ -121,7 +121,6 @@ function sqlForCompanyPartialFilter(dataToFilter) {
 
 function sqlForJobPartialFilter(dataToFilter) {
 	try {
-		console.log(dataToFilter);
 		const keys = Object.keys(dataToFilter);
 		let cols = [];
 		let counter = 1;
@@ -154,9 +153,7 @@ function sqlForJobPartialFilter(dataToFilter) {
 					delete dataToFilter.hasEquity;
 				}
 			} else {
-				throw new BadRequestError(
-					'Filter does not match allowed methods: minEmployees, maxEmployees, nameLike'
-				);
+				throw new BadRequestError('Filter does not match allowed methods: title, minSalary, hasEquity');
 			}
 		});
 

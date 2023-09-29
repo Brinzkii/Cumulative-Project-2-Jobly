@@ -59,7 +59,7 @@ router.get('/', async function (req, res, next) {
 			const jobs = await Job.findAll();
 			return res.json({ jobs });
 		} else {
-			const jobs = await Job.filter(title, minSalary, hasEquity);
+			const jobs = await Job.filter({ title, minSalary, hasEquity });
 			return res.json({ jobs });
 		}
 	} catch (err) {

@@ -54,12 +54,7 @@ class Job {
 	 *  description, numEmployees, logoUrl }}, ...]
 	 */
 
-	static async filter(title, minSalary, hasEquity) {
-		const data = {
-			title,
-			minSalary,
-			hasEquity,
-		};
+	static async filter(data) {
 		const { filterCols, values } = sqlForJobPartialFilter(data);
 		const querySql = `SELECT id, title, salary, equity, company_handle AS "company"
         FROM jobs
