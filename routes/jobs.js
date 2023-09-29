@@ -66,7 +66,7 @@ router.get('/', async function (req, res, next) {
 	}
 });
 
-/** GET /:id  =>  { job }
+/** GET /[id]  =>  { job }
  *
  *  Job is { title, salary, equity, company }
  *  where company is { handle, name,

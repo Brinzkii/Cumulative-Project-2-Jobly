@@ -113,9 +113,8 @@ function sqlForCompanyPartialFilter(dataToFilter) {
  *
  * Returns:
  * 	{
- * 		filterCols: ['"num_employees">=$1', '"num_employees"<=$2', '"name
- * 			ILIKE" $3'],
- * 		values: [minEmployees, maxEmployees, ...,]
+ * 		filterCols: ['"title ILIKE" $1', '"salary">=$2', '"equity" > 0'],
+ * 		values: [title, minSalary]
  * 	}
  */
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const db = require('../db');
-const { BadRequestError, NotFoundError } = require('../expressError');
+const { NotFoundError } = require('../expressError');
 const { sqlForPartialUpdate, sqlForJobPartialFilter } = require('../helpers/sql');
 
 /** Related functions for jobs */
@@ -44,14 +44,11 @@ class Job {
 		return jobsRes.rows;
 	}
 
-	/** WORK IN PROGRESS
-	 *
-	 *  Find all jobs matching given criteria
+	/** Find all jobs matching given criteria
 	 *
 	 *  Accepts any combination of title, minSalary and hasEquity
 	 *
-	 *  Returns [{ title, salary, equity, company: { handle, name,
-	 *  description, numEmployees, logoUrl }}, ...]
+	 *  Returns [{ title, salary, equity, company}, ...]
 	 */
 
 	static async filter(data) {
