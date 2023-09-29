@@ -16,9 +16,8 @@
       "minimum": 0
     },
     "logoUrl": {
-      "type": "string",
-      "format": "uri"
-    }
+		"type": "string"
+	}
   },
   "additionalProperties": false,
   "required": []

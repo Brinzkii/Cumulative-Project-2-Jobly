@@ -16,7 +16,7 @@ To run the tests:
 
 # Jobly API
 
-## Register user
+## Register User
 
 ### Request
 `POST /auth/register`
@@ -52,7 +52,7 @@ To run the tests:
     }
     
     
-## Add new user (admin only)
+## Add new User (admin only)
 
 ### Request
 `POST /users`
@@ -69,7 +69,7 @@ To run the tests:
     }
     
     
-## Get list of all users (admin only)
+## Get list of all Users (admin only)
 
 ### Request
 `GET /users`
@@ -97,7 +97,7 @@ To run the tests:
     }
     
     
-## Get user (admin or user only)
+## Get User (admin or user only)
 
 ### Request
 `GET /users/[username]`
@@ -123,7 +123,7 @@ To run the tests:
     }
     
     
-## Patch user (admin or user only)
+## Patch User (admin or user only)
 
 ### Request
 `PATCH /users/[username]`
@@ -148,7 +148,7 @@ To run the tests:
     }
     
     
-## Apply for a job (admin or user only)
+## Apply for a Job (admin or user only)
 
 ### Request
 `POST /users/[username]/jobs/[jobId]`
@@ -165,7 +165,7 @@ To run the tests:
     }
     
     
-## Delete user (admin or user only)
+## Delete User (admin or user only)
 
 ### Request
 `DELETE /users/[username]`
@@ -179,4 +179,273 @@ To run the tests:
     
     {
         "deleted": username
+    }
+    
+    
+## Add a Company (admin only)
+
+### Request
+`POST /companies`
+
+    curl -X POST http://localhost:3001/companies -H "Content-Type: application/json" -H "Authorization: Bearer [JWT]" -d '{"handle":"cmp", "name":"Company", "description":"test company", "numEmployees":1, "logoUrl":"/logos/logo1.png"}'
+    
+### Response
+    
+    HTTP/1.1 201 Created
+    Content-Type: application/json; charset=utf-8
+    
+    {
+        "company": {
+            handle,
+            name,
+            description,
+            numEmployees,
+            logoUrl
+        }
+    }
+    
+    
+## Get list of Companies - supports partial filtering
+
+### Request
+`GET /companies`
+
+#### Filter methods:
+-minEmployees
+
+-maxEmployees
+
+-nameLike
+
+    curl -X GET http://localhost:3001/companies -H "Content-Type: application/json" -d '{"minEmployees": [number], "maxEmployees": [number], "nameLike": "[string]"}'
+    
+### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=utf-8
+    
+    {
+        "companies": [
+            {
+                handle,
+                name,
+                description,
+                numEmployees,
+                logoUrl
+            },
+            {
+                handle,
+                name,
+                description,
+                numEmployees,
+                logoUrl
+            }, ...
+        ]
+    }
+    
+    
+## Get Company by handle
+
+### Request
+`GET /companies/[handle]`
+
+    curl -X GET http://localhost:3001/companies/[handle] -H "Content-Type: application/json" -d '{"handle": [handle]}'
+    
+### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=utf-8
+    
+    {
+        "company": {
+            handle,
+            name,
+            description,
+            numEmployees,
+            logoUrl,
+            jobs: [jobId, jobId, ...]
+        }
+    }
+    
+    
+## Patch Company (admin only) - supports partial patching
+
+### Request
+`PATCH /companies/[handle]`
+
+#### Patchable fields:
+-name
+
+-description
+
+-numEmployees
+
+-logoUrl
+
+    curl -X PATCH http://localhost:3001/companies/[handle] -H "Content-Type: application/json" -H "Authorization: Bearer [JWT]" -d '{"name":"Company", "description":"test company", "numEmployees":1, "logoUrl":"/logos/logo1.png"}'
+    
+### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=utf-8
+    
+    {
+        "company": {
+            handle,
+            name,
+            description,
+            numEmployees,
+            logoUrl,
+        }
+    }
+    
+    
+## Delete Company (admin only)
+
+### Request
+`DELETE /companies/[handle]`
+
+    curl -X DELETE http://localhost:3001/companies/[handle] -H "Content-Type: application/json" -H "Authorization: Bearer [JWT]"
+    
+### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=utf-8
+    
+    {
+        "deleted": "[handle]"
+    }
+    
+    
+## Post Job (admin only)
+
+### Request
+`POST /jobs`
+
+    curl -X POST http://localhost:3001/jobs -H "Content-Type: application/json" -d '{"title":"Job Title", "salary": 10000, "equity":0.15, "companyHandle": "[handle]"}'
+    
+### Response
+
+    HTTP/1.1 201 Created
+    Content-Type: application/json; charset=utf-8
+    
+    {
+        job: {
+            id,
+            title,
+            salary,
+            equity,
+            company
+        }
+    }
+    
+    
+## Get list of jobs - supports partial filtering
+
+### Request
+`GET /jobs`
+
+#### Filter methods:
+-title
+
+-minSalary
+
+-hasEquity
+
+    curl -X GET http://localhost:3001/jobs -H "Content-Type: application/json" -d '{"title": "[jobTitle]", "minSalary": [number], "hasEquity": "[boolean]"}'
+    
+### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=utf-8
+    
+    {
+        jobs: [
+            {
+                id,
+                title,
+                salary,
+                equity,
+                company
+            },
+            {
+                ...
+            }, ...
+        ]
+    }
+    
+    
+## Get Job by ID (admin only)
+
+### Request
+`GET /jobs/[id]`
+
+    curl -X GET http://localhost:3001/jobs/[id] -H "Content-Type: application/json" -H "Authorization: Bearer [JWT]"
+    
+### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=utf-8
+    
+    {
+        job: {
+            id,
+            title,
+            salary,
+            equity,
+            company: {
+                handle,
+                name,
+                description,
+                numEmployees,
+                logoUrl
+            }
+        }
+    }
+    
+    
+## Patch Job (admin only) - supports partial patching
+
+### Request
+`PATCH /jobs/[id]`
+
+#### Patchable fields:
+-title
+
+-salary
+
+-equity
+
+    curl -X PATCH http://localhost:3001/jobs/[id] -H "Content-Type: application/json" -H "Authorization: Bearer [JWT]" -d '{"title":"Company", "salary":[number], "equity":"[number]"}'
+    
+### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=utf-8
+    
+    {
+        job: {
+            id,
+            title,
+            salary,
+            equity,
+            company
+        }
+    }
+    
+    
+## Delete Job (admin only)
+
+### Request
+`DELETE /jobs/[id]`
+
+    curl -X DELETE http://localhost:3001/jobs/[id] -H "Content-Type: application/json" -H "Authorization: Bearer [JWT]"
+    
+### Response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json; charset=utf-8
+    
+    {
+        "deleted": "id([id]) - [title]"
     }
