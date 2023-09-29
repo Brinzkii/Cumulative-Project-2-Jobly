@@ -130,7 +130,7 @@ describe('GET /jobs/:id', function () {
 				title: job.title,
 				salary: job.salary,
 				equity: job.equity,
-				company: job.company,
+				company: expect.any(Object),
 			},
 		});
 	});

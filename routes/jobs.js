@@ -40,8 +40,7 @@ router.post('/', ensureAdmin, async function (req, res, next) {
 });
 
 /** GET /  =>
- *   { jobs: [{ title, salary, equity, company: { handle, name,
- * description, numEmployees, logoUrl }}, ...] }
+ *   { jobs: [{ title, salary, equity, company }, ...] }
  *
  * Can filter on provided search filters:
  * - title (will find case-insensitive, partial matches)
@@ -70,6 +69,8 @@ router.get('/', async function (req, res, next) {
 /** GET /:id  =>  { job }
  *
  *  Job is { title, salary, equity, company }
+ *  where company is { handle, name,
+ * description, numEmployees, logoUrl }
  *
  * Authorization required: none
  */

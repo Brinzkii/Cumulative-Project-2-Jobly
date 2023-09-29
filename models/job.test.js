@@ -87,7 +87,7 @@ describe('get', function () {
 			title: expect.any(String),
 			salary: expect.any(Number),
 			equity: expect.any(String),
-			company: expect.any(String),
+			company: expect.any(Object),
 		});
 	});
 
