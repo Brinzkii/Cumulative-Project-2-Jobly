@@ -131,6 +131,17 @@ class User {
 
 		if (!user) throw new NotFoundError(`No user: ${username}`);
 
+		const jobsRes = await db.query(`
+		SELECT job_id AS "jobId"
+		FROM applications
+		WHERE username = $1`,
+		[username])
+		let jobs = []
+
+		jobsRes.rows.forEach((job) => jobs.push(job.jobId))
+
+		user.jobs = jobs
+
 		return user;
 	}
 
@@ -178,6 +189,24 @@ class User {
 
 		delete user.password;
 		return user;
+	}
+
+	/** Apply user for job */
+
+	static async apply(username, jobId) {
+		const resp = await db.query(
+			`
+		INSERT INTO applications
+		(username, job_id)
+		VALUES ($1, $2)
+		RETURNING job_id AS "jobId"`,
+			[username, jobId]
+		);
+		const job = resp.rows[0];
+
+		if (!job) throw new BadRequestError(`Application rejected, invalid username / jobId`);
+
+		return job.jobId;
 	}
 
 	/** Delete given user from database; returns undefined. */
